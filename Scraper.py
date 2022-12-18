@@ -36,7 +36,7 @@ spectrum_password = info.spectrum_password
 ###### end ######
 
 ###### Spectrum Vars ######
-spectrum_login_url = 'https://id.spectrum.net/login?account_type=RESIDENTIAL&client_id=consumer_portal&code_challenge=2_y_2CV-jGxm9reIO38rjw9IjvV7OnS3fxAHIfT6Ht4&code_challenge_method=S256&exVisitID=202210190201P-414b8b36-1f8b-420a-8bbb-864ea7b181b9&nonce=796842834953632539699441024669&redirect_uri=https:%2F%2Fwww.spectrum.net%2Fsign-in-redirect&state=eyJ0YXJnZXRVcmwiOiJodHRwczovL3d3dy5zcGVjdHJ1bS5uZXQvYWNjb3VudC1zdW1tYXJ5IiwieHNyZiI6IlJXOTZRVlJGZUZGQlRVaElWbTFXTGxaWU5tWkVUSGt0U25wblJ6Wi1VSFZFY2paeGJtcHlaRkZPVWciLCJpc0RsYSI6ZmFsc2V9'
+spectrum_login_url = 'https://id.spectrum.net/login?account_type=RESIDENTIAL&client_id=consumer_portal&code_challenge=-FPDoT9MGZbnY1LsetMzPRhUrfwZoYWstBBxEueOl2I&code_challenge_method=S256&error=IDCE-1013&exVisitID=202211152031P-f8617634-22b2-4abe-af21-240477e57e89&nonce=918405579072889532618572354021&redirect_uri=https:%2F%2Fwww.spectrum.net%2Fsign-in-redirect&state=eyJ0YXJnZXRVcmwiOiJodHRwczovL3d3dy5zcGVjdHJ1bS5uZXQvP2Vycm9yTWVzc2FnZT1BbGwrcmVxdWlyZWQrdmFsdWVzK2Zvcm0rbG9jYWxzdG9yYWdlK2FyZSttaXNzaW5nLiIsInhzcmYiOiJPVU0xUTNNd1ExQmtOVGt4Y3pOQ1NsWTFTRVJ0VEZCVE5FRlNXalZxVEY5Mk5IaDZUSEIwYTJGcmVBIiwiaXNEbGEiOmZhbHNlfQ'
 spectrum_billing_info_url = 'https://www.spectrum.net/billing'
 spectrum_email_path = '//*[@id="cc-username"]'
 spectrum_password_path = '//*[@id="cc-user-password"]'
@@ -62,17 +62,16 @@ avista_balance = float(driver.find_element("xpath", avista_balance_path).text.re
 ###### Get Spectrum Balance ######
 driver.get(spectrum_login_url)
 
-try:
-    driver.implicitly_wait(30)
-    time.sleep(5)
-    driver.find_element("xpath", spectrum_email_path).send_keys(spectrum_username)
-    driver.find_element("xpath", spectrum_password_path).send_keys(spectrum_password)
-    driver.find_element("xpath", spectrum_button_path).click()
-except: 
-    time.sleep(15)
-    driver.find_element("xpath", spectrum_email_path).send_keys(spectrum_username)
-    driver.find_element("xpath", spectrum_password_path).send_keys(spectrum_password)
-    driver.find_element("xpath", spectrum_button_path).click()
+while "https://www.spectrum.net/account-summary" not in str(driver.current_url)  :
+    try:
+        driver.implicitly_wait(10)
+        time.sleep(5)
+        driver.find_element("xpath", spectrum_email_path).send_keys(spectrum_username)
+        driver.find_element("xpath", spectrum_password_path).send_keys(spectrum_password)
+        driver.find_element("xpath", spectrum_button_path).click()
+        time.sleep(5)
+    except: 
+        print("Spectrum login failed. Trying again.")
 
 # Spectrum is also slow. Give it time so nothing breaks
 try:
